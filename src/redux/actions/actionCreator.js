@@ -1,10 +1,16 @@
-import { SET_USER_DATA } from "../constants";
-import { SET_LOGIN_DATA } from "../constants";
+import { REGISTRATION } from "../constants";
+import { CONFIRMATION } from "../constants";
+import { LOGIN } from "../constants";
 
-export const setAuthUserDataAC = (payload) => ({
-    type: SET_USER_DATA, payload
+export const setRegistrationAC = (payload) => ({
+    type: REGISTRATION, payload
 })
 
-export const setLoginDataAC = (payload) => ({
-    type: SET_LOGIN_DATA, payload
+export const setLoginAC = (payload) => ({
+    type: LOGIN, payload
 })
+
+export const setConfirmAC = (payload) => ({
+    type: CONFIRMATION, payload
+})
+
