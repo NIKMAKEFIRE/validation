@@ -1,32 +1,21 @@
-import { useState, useEffect, useContext } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { validateLogin } from "../validate";
-import { EMAIL, PASSWORD } from '../redux/constants/constants';
-import { email, password } from '../redux/actions/actions';
-import { UserContext } from "../App";
-import {loginUser} from "../API/api"
+import { validateRegistration } from "../validate";
+import { CONFIRM_PASSWORD, EMAIL, PASSWORD } from "../redux/constants/constants";
+import { confirmPassword, email, password } from "../redux/actions/actions";
+import {registrationUser} from "../API/api"
 import { connect } from 'react-redux';
 
-const Login = () => {
+const Registration = () => {
 
     const state = useSelector(state => state.auth);
     const [data, setData] = useState(state)
     const [formValues, setFormValues] = useState(data);
     const [formErrors, setFormErrors] = useState({});
     const [isSubmit, setIsSubmit] = useState(false);
-    const { user, setUser } = useContext(UserContext);
-    const location = useLocation();
-    const navigate = useNavigate()
     const dispatch = useDispatch();
-
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        setFormErrors(validateLogin(formValues));
-        setIsSubmit(true);
-        loginUser(formValues)
-        navigator()
-    }
+    const navigate = useNavigate()
 
     const handlerEmail = (e) => {
         dispatch(email(EMAIL, e.target.value));
@@ -48,8 +37,26 @@ const Login = () => {
         setFormValues({ ...formValues, [name]: value });
     }
 
+    const handlerConfirmPassword = (e) => {
+        dispatch(confirmPassword(CONFIRM_PASSWORD, e.target.value));
+        const { name, value } = e.target;
+        setData({
+            ...data,
+            [e.target.name]: value
+        })
+        setFormValues({ ...formValues, [name]: value });
+    }
+
     const navigator = () => {
-        return Object.keys(formErrors).length === 0 && isSubmit ? navigate('/main') : null
+        return Object.keys(formErrors).length === 0 && isSubmit ? navigate('/login') : null
+    }
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        setFormErrors(validateRegistration(formValues));
+        setIsSubmit(true);
+        registrationUser(formValues)
+        navigator()
     }
 
     useEffect(() => {
@@ -62,13 +69,13 @@ const Login = () => {
     return (
         <div className="container">
             {Object.keys(formErrors).length === 0 && isSubmit ? (
-                <div className="notification">Успешный логин - нажмите "продолжить"</div>
+                <div className="notification">Успешная регистрация - нажмите "продолжить"</div>
             ) : (
                 <pre>{JSON.stringify(formValues, undefined, 2)}</pre>
             )}
 
             <form onSubmit={handleSubmit}>
-                <h1>Логин</h1>
+                <h1>Регистрация</h1>
                 <div>
                     <div>
                         <label>Email</label>
@@ -85,30 +92,35 @@ const Login = () => {
                         <label>Пароль</label>
                         <input
                             type="password"
-                            name={`password`}
+                            name="password"
                             placeholder="Пароль"
                             value={formValues.password}
                             onChange={handlerPassword}
                         />
                     </div>
                     <p>{formErrors.password}</p>
-                    {
-                        Object.keys(formErrors).length === 0 && isSubmit
-                            ? <button
-                                onClick={() => {
-                                    if (user.loggedIn) return;
-                                    setUser({ loggedIn: true });
-
-                                    if (location.state?.from) {
-                                        navigate(location.state.from);
-                                    }
-                                }} >Продолжить</button>
-                            : <button>Войти</button>
-                    }
+                    <div>
+                        <label>Подтверждение пароля</label>
+                        <input
+                            type="password"
+                            name="confirmPassword"
+                            placeholder="Подтверждение пароля"
+                            value={formValues.confirmPassword}
+                            onChange={handlerConfirmPassword}
+                        />
+                    </div>
+                    <p>{formErrors.confirmPassword}</p>
+                    <button>
+                        {
+                            Object.keys(formErrors).length === 0 && isSubmit
+                                ? 'Продолжить'
+                                : 'Зарегестрироваться'
+                        }
+                    </button>
                 </div>
             </form>
         </div>
     );
 }
 
-export default connect(null, { loginUser })(Login);
+export default connect(null, { registrationUser })(Registration);

@@ -1,3 +1,0 @@
-export const REGISTRATION = 'REGISTRATION'
-export const CONFIRMATION = 'CONFIRMATION'
-export const LOGIN = 'LOGIN'

@@ -1,19 +1,46 @@
 import axios from "axios"
 
-export const authAPI = {
-    async registration(username, email, password1, password2, keyword) {
-        return await axios.post(`http://188.166.119.86:8080/api/user/register/`, {
-            username, email, password1, password2, keyword
-        }).then(response => console.log(response))
-    },
-    async login(code, email) {
-        return await axios.post(`http://188.166.119.86:8080/api/user/login/`, {
-            code, email
+export const loginUser = (userObj) => (dispatch) => {
+    axios.post('http://localhost:3000/login', userObj)
+        .then(response => {
+            console.log(response)
+            dispatch({
+                type: 'LOGIN',
+                payload: response.data
+            })
         })
-    },
-    async prelogin(login, password) {
-        return await axios.post(`http://188.166.119.86:8080/api/user/pre-login/`, {
-            login, password
+        .catch(error => {
+            console.log(error)
         })
-    }
 }
+
+export const registrationUser = (userObj) => (dispatch) => {
+    axios.post('http://localhost:3000/', userObj)
+        .then(response => {
+            console.log(response)
+            dispatch({
+                type: 'REGISTRATION',
+                payload: response.data
+            })
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
+
+export const passwordChangeUser = (userObj) => (dispatch) => {
+    axios.post('http://localhost:3000/password', userObj)
+        .then(response => {
+            console.log(response)
+            dispatch({
+                type: 'PASSWORD_CHANGE',
+                payload: response.data
+            })
+        })
+        .catch(error => {
+            console.log(error)
+        })
+}
+
+
+
